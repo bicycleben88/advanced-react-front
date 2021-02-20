@@ -60,11 +60,11 @@ export default withAuth(
       ProductImage,
       CartItem,
     }),
+    extendGraphqlSchema,
     ui: {
       // change this for roles
       isAccessAllowed: ({ session }) => !!session?.data,
     },
-    extendGraphqlSchema,
     session: withItemData(statelessSessions(sessionConfig), {
       // GraphQl query
       User: "id name email",

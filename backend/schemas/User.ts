@@ -16,6 +16,7 @@ export const User = list({
         itemView: { fieldMode: "read" },
       },
     }),
-    // Todo add roles, carts, & orders
+    orders: relationship({ ref: "Order.user", many: true }),
+    // Todo add roles
   },
 });

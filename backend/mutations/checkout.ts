@@ -5,6 +5,7 @@ import {
   OrderCreateInput,
 } from "../.keystone/schema-types";
 import stripeConfig from "../lib/Stripe";
+import { CartItem } from "../schemas/CartItem";
 
 const graphql = String.raw;
 async function checkout(
@@ -56,7 +57,7 @@ async function checkout(
 
   const charge = await stripeConfig.paymentIntents
     .create({
-      amount: 4000009808,
+      amount: 400009,
       currency: "USD",
       confirm: true,
       payment_method: token,
@@ -65,6 +66,29 @@ async function checkout(
       console.log(error);
       throw new Error(error.message);
     });
+  console.log(charge);
+  const orderItems = cartItems.map((cartItem) => {
+    const orderItem = {
+      name: cartItem.product.name,
+      description: cartItem.product.description,
+      price: cartItem.product.price,
+      quantity: cartItem.quantity,
+      photo: { connect: { id: cartItem.product.photo.id } },
+    };
+    return orderItem;
+  });
+  const order = await context.lists.Order.createOne({
+    data: {
+      total: charge.amount,
+      charge: charge.id,
+      items: { create: orderItems },
+    },
+  });
+  const cartItemIds = cartItems.map((cartItem) => cartItem.id);
+  await context.lists.CartItem.deleteMany({
+    ids: cartItemIds,
+  });
+  return order;
 }
 
 export default checkout;

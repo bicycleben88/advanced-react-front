@@ -15,6 +15,7 @@ import { useMutation } from "@apollo/client";
 import { useRouter } from "next/dist/client/router";
 import { useCart } from "../lib/cartState";
 import { CURRENT_USER_QUERY } from "./User";
+import { route } from "next/dist/next-server/server/router";
 
 const CheckoutFormStyles = styled.form`
   box-shadow: 0 1px 2px 2px rgba(0, 0, 0, 0.04);
@@ -72,10 +73,11 @@ function CheckoutForm() {
         token: paymentMethod.id,
       },
     });
-    router.push({
-      pathname: "/order",
-      query: { id: order.data.checkout.id },
-    });
+    // router.push({
+    //   pathname: "/order",
+    //   query: { id: order.data.checkout.id },
+    // });
+    router.push(`/order/${order.data.checkout.id}`);
     closeCart();
     setLoading(false);
     nProgress.done();

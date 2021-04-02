@@ -2,8 +2,6 @@ import { list } from "@keystone-next/keystone/schema";
 import { text, password, relationship } from "@keystone-next/fields";
 
 export const User = list({
-  // access:
-  // ui:
   fields: {
     name: text({ isRequired: true }),
     email: text({ isRequired: true }),
@@ -19,6 +17,10 @@ export const User = list({
     orders: relationship({ ref: "Order.user", many: true }),
     role: relationship({
       ref: "Role.assignedTo",
+    }),
+    products: relationship({
+      ref: "Product.user",
+      many: true,
     }),
   },
 });
